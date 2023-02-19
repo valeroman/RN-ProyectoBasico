@@ -33,8 +33,8 @@ export const useThemes = () => {
         colors: {
             primary: '#75CEDB',
             background: 'black',
-            card: 'green',
-            text: 'green',
+            card: 'white',
+            text: 'white',
             border: 'white',
             notification: 'teal',
         },

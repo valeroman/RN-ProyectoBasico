@@ -22,7 +22,10 @@ export const HomeScreen = () => {
     <>
         <Image 
           source={ require('../assets/pokebola.png') }
-          style={ styles.pokebolaBG }
+          style={{
+            ...styles.pokebolaBG,
+            tintColor: theme.colors.text
+          }}
         />
         <Text style={{
           ...styles.title,
