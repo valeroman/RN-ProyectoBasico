@@ -5,10 +5,14 @@ import { PokemonScreen } from '../screens/PokemonScreen';
 import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { useAppSelector } from '../store';
+import { SimplePokemon } from '../interfaces/pokemonInterfaces';
 
-const Stack = createStackNavigator();
+export type RootStackParams = {
+  HomeScreen: undefined;
+  PokemonScreen: { simplePokemon: SimplePokemon, color: string }
+}
 
-
+const Stack = createStackNavigator<RootStackParams>();
 
 export const Navigator = () => {
 

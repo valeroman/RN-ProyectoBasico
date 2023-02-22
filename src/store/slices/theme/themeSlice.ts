@@ -9,7 +9,7 @@ const initialState = {
             primary: '#084F6A',
             background: 'white',
             card: 'white',
-            text: 'brown',
+            text: 'black',
             border: 'black',
             notification: 'teal',
         },

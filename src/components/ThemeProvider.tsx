@@ -1,15 +1,12 @@
 import React, { useEffect } from 'react'
-import { Appearance, AppState, View } from 'react-native'
-import { useThemes } from '../hooks/useThemes';
-import { useThemeStore } from '../hooks/useThemeStore';
+import { Appearance, AppState } from 'react-native'
+import { useThemes, useThemeStore } from '../hooks';
 
 export const ThemeProvider = ({ children }: any) => {
 
     const { setDarkTheme, setLightTheme } = useThemeStore();
 
     const { darkTheme, lightTheme } = useThemes();
-
-    console.log('UNO');
 
     useEffect(() => {
         AppState.addEventListener('change', ( status ) => {

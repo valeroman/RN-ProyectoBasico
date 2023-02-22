@@ -19,7 +19,7 @@ export const useThemes = () => {
             primary: '#084F6A',
             background: 'white',
             card: 'white',
-            text: 'red',
+            text: 'black',
             border: 'black',
             notification: 'teal',
         },
