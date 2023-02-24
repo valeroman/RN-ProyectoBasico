@@ -8,6 +8,7 @@ import { styles } from '../theme/appTheme';
 import { ThemeState, useThemes } from '../hooks/useThemes';
 import { usePokemonpaginated } from '../hooks';
 import { PokemonCard } from '../components/PokemonCard';
+import { SimplePokemon } from '../interfaces/pokemonInterfaces';
 
 export const HomeScreen = () => {
 
@@ -21,7 +22,12 @@ export const HomeScreen = () => {
 
   const { theme } = useAppSelector( state => state.theme );
 
-// console.log('{[X]}', theme)
+  const renderItem = ( item: SimplePokemon ) => {
+    return (
+      <PokemonCard pokemon={ item } key={ item.id } />
+    )
+  }
+
   return (
     <>
         <Image 
@@ -33,39 +39,38 @@ export const HomeScreen = () => {
         />
         <View style={{ alignItems: 'center' }}>
           <FlatList 
-          data={ simplePokemonList }
-          keyExtractor={ (pokemon) => pokemon.id  }
-          showsVerticalScrollIndicator={ false }
-          numColumns={ 2 }
+            data={ simplePokemonList }
+            keyExtractor={ (pokemon) => pokemon.id  }
+            showsVerticalScrollIndicator={ false }
+            numColumns={ 2 }
 
-          //  header
-          ListHeaderComponent={(
-            <Text style={{
-                ...styles.title,
-                color: theme.colors.text,
-                ...styles.globalMargin,
-                top: top + 20,
-                marginBottom: top + 20,
-                padding: 10
-            }}>
-              Pokedex
-            </Text>
-          )}
+            //  header
+            ListHeaderComponent={(
+              <Text style={{
+                  ...styles.title,
+                  color: theme.colors.text,
+                  ...styles.globalMargin,
+                  top: top + 20,
+                  marginBottom: top + 20,
+                  padding: 10
+              }}>
+                Pokedex
+              </Text>
+            )}
+            renderItem={ ({ item }) => renderItem( item ) }
+            // renderItem={ ({ item }) => (<PokemonCard pokemon={ item } key={ item.id } />)}
 
-          renderItem={ ({ item, index}) => (<PokemonCard pokemon={ item } key={ item.id } />)}
+            //  Infinite scroll
+            onEndReached={ loadPokemons }
+            onEndReachedThreshold={ 0.4 }
 
-          //  Infinite scroll
-          onEndReached={ loadPokemons }
-          onEndReachedThreshold={ 0.4 }
-
-          ListFooterComponent={ 
-            <ActivityIndicator 
-              style={{ height: 100 }}
-              size={ 20 } 
-              color="grey"
-            /> 
-          }
-
+            ListFooterComponent={ 
+              <ActivityIndicator 
+                style={{ height: 100 }}
+                size={ 20 } 
+                color="grey"
+              /> 
+            }
           />
         </View>
         
