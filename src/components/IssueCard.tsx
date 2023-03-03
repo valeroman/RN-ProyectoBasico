@@ -1,71 +1,82 @@
 import React from 'react'
+import { useNavigation } from '@react-navigation/native';
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon  from 'react-native-vector-icons/Ionicons';
-import { DataIssue } from './IssuesList';
+import { Issue, State } from '../interfaces/issue';
 
 const {width} = Dimensions.get('window');
 
 interface Props {
-    item: DataIssue
+    issue: Issue
 }
 
-export const IssueCard = ({ item }: Props) => {
-  return (
-    <TouchableOpacity
-    >
-        <View style={{...styles.cardContainer, width: width - 40}}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ right: 0  }}>
+export const IssueCard = ({ issue }: Props) => {
 
-                    <Icon 
-                        name='alert-circle-outline'
-                        size={20}
-                        color='red'
-                    />
-                    {/* <Icon 
-                        name='checkbox-outline'
-                        size={20}
-                        color='green'
-                    /> */}
-                </View>
-                <View style={{ width: 200, left: 5 }}>
-                    <Text style={ styles.textMessage }>{ item.message }</Text>
-                    <Text style={ styles.text }>#25581 opened 2 days ago by </Text>
-                    <Text style={ styles.textMessage }>segfaulty</Text>
-                </View>
-                <View style={{ alignItems: 'center', left: 5 }}>
-                    <View 
-                        style={{ 
-                            // backgroundColor: 'red', 
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            
-                        }}
-                    >
-                        <Image
-                            source={{ uri: 'https://avatars.githubusercontent.com/u/1933404?v=4'}} 
-                            style={ styles.avatarImage }
-                        />
-                        <View style={{ left: 5 }}>
-                            <Text >10</Text>
-                        </View>
-                        <View>
-                            <Icon 
-                                name='chatbox-outline'
-                                size={20}
-                                color='green'
-                                style={{ left: 10}}
+    const navigation = useNavigation<any>();
+
+    return (
+        <TouchableOpacity
+            onPress={
+                () => navigation.navigate('IssueScreen', { issue: issue } )
+            }
+        >
+            <View style={{...styles.cardContainer, width: width - 40}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ right: 0  }}>
+                        {
+                            issue.state === State.Open
+                                ? ( <Icon 
+                                        name='alert-circle-outline'
+                                        size={20}
+                                        color='red'
+                                     /> )
+                                : (  <Icon 
+                                        name='checkbox-outline'
+                                        size={20}
+                                        color='green'
+                                    />)
+                        }
+                        
+                       
+                    </View>
+                    <View style={{ width: 200, left: 5 }}>
+                        <Text style={ styles.textMessage }>{ issue.title }</Text>
+                        <Text style={ styles.text }>#{ issue.number } opened 2 days ago by </Text>
+                        <Text style={ styles.textMessage }>{ issue.user.login }</Text>
+                    </View>
+                    <View style={{ alignItems: 'center', left: 5 }}>
+                        <View 
+                            style={{ 
+                                // backgroundColor: 'red', 
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                
+                            }}
+                        >
+                            <Image
+                                source={{ uri: `${ issue.user.avatar_url }`}} 
+                                style={ styles.avatarImage }
                             />
+                            <View style={{ left: 5 }}>
+                                <Text>{ issue.comments }</Text>
+                            </View>
+                            <View>
+                                <Icon 
+                                    name='chatbox-outline'
+                                    size={20}
+                                    color='black'
+                                    style={{ left: 10}}
+                                />
+                            </View>
                         </View>
                     </View>
                 </View>
-            </View>
 
-        </View>
-        {/* <Text>{ item.message }</Text> */}
-    </TouchableOpacity>
-  )
+            </View>
+            {/* <Text>{ item.message }</Text> */}
+        </TouchableOpacity>
+    )
 }
 
 const styles = StyleSheet.create({

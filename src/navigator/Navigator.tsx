@@ -2,8 +2,14 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from '../screens/HomeScreen';
 import { IssueScreen } from '../screens/IssueScreen';
+import { Issue } from '../interfaces/issue';
 
-const Stack = createStackNavigator();
+export type RootStackParams = {
+  HomeScreen: undefined,
+  IssueScreen: { issue: Issue },
+}
+
+const Stack = createStackNavigator<RootStackParams>();
 
 export const Navigator = () => {
   return (

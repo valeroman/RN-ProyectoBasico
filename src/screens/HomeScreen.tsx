@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IssuesList } from '../components/IssuesList';
 import { LabelPicker } from '../components/LabelPicker';
+import { Loading } from '../components/Loading';
+import { useIssues } from '../hooks';
 import { styles } from '../Theme/globalTheme';
 
 export const HomeScreen = () => {
@@ -10,6 +12,8 @@ export const HomeScreen = () => {
   const { top } = useSafeAreaInsets();
 
   const [seletedLabels, setSeletedLabels] = useState<string[]>([]);
+
+  const { issuesQuery } = useIssues()
 
   const onLabelChanged = ( labelName: string ) => {
     ( seletedLabels.includes( labelName ) )
@@ -24,8 +28,13 @@ export const HomeScreen = () => {
           <Text style={ stylesHome.title }>Git Issues</Text>
           <Text style={ stylesHome.subTitle }>Seguimiento de problemas</Text>
         </View>
+
         <View>
-          <IssuesList />
+          {
+            issuesQuery.isLoading
+              ? ( <Loading /> )
+              : ( <IssuesList issues={ issuesQuery.data || [] } /> )
+          }
         </View>
         <View style={{ marginTop: 20 }}>
           <LabelPicker 

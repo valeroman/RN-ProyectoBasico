@@ -1,36 +1,29 @@
 import React from 'react'
 import { FlatList, Text, View } from 'react-native'
+import { Issue } from '../interfaces';
 import { IssueCard } from './IssueCard';
 
-export interface DataIssue  {
-    id     : string;
-    message   : string;
+
+interface Props {
+    issues: Issue[];
 }
 
-const data: DataIssue = {
-    id: '1',
-    message: 'Suggestion: why not make accessing and changing the state possible globally?'
-}
 
-const datafinal = [data];
-// console.log(datafinal);
+export const IssuesList = ({ issues }:Props) => {
 
-
-export const IssuesList = () => {
-
-    const renderItem = ( item: DataIssue ) => {
+    const renderItem = ( issue: Issue ) => {
         return (
-          <IssueCard item={ item } key={ item.id } />
+          <IssueCard issue={ issue } key={ issue.id } />
         )
       }
 
     return (
         <View style={{ top: 20 }}>
             <FlatList 
-                data={ datafinal }
-                keyExtractor={ (datafinal) => datafinal.id  }
+                data={ issues }
+                keyExtractor={ (issue) => issue.id.toString()  }
                 showsVerticalScrollIndicator={ false }
-                renderItem={ (item) => renderItem( item.item ) }
+                renderItem={ (issue) => renderItem( issue.item ) }
             />
         </View>
     )

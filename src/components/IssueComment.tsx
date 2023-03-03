@@ -1,20 +1,20 @@
 import React from 'react'
 import { Dimensions, Image, ScrollView, Text, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
+import { Issue } from '../interfaces';
 
 const windownWidth = Dimensions.get('window').width;
+
 interface Props {
-    body: string;
+    issue: Issue;
 }
 
 
-export const IssueComment = ({body}: Props) => {
+export const IssueComment = ({ issue }: Props) => {
     // console.log('body', body.length)
   return (
-    <ScrollView
-        showsVerticalScrollIndicator={ false }
-        style={{ marginBottom: 180 }}
-    >
+
+    <>
         <View 
             style={{ 
                 backgroundColor: 'grey', 
@@ -29,7 +29,7 @@ export const IssueComment = ({body}: Props) => {
             }}
         >
             <Image 
-                source={{ uri: 'https://avatars.githubusercontent.com/u/1933404?v=4' }}
+                source={{ uri: `${ issue.user.avatar_url }` }}
                 style={{
                     width: 35,
                     height: 35,
@@ -37,14 +37,16 @@ export const IssueComment = ({body}: Props) => {
                     marginHorizontal: 10
                 }}
             />
-            <Text style={{ color: 'white', fontSize: 14, fontWeight: 'bold', width: windownWidth - 80 }}>IssueComment</Text>
+            <Text style={{ color: 'white', fontSize: 14, fontWeight: 'bold', width: windownWidth - 80 }}>{ issue.user.login } commented</Text>
         </View>
+        
         <View style={{ padding: 10 }}>
             <Markdown
             >
-                {body}
+                { issue.body }
             </Markdown>
         </View>
-    </ScrollView>
+    </>
+
   )
 }
