@@ -4,19 +4,18 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IssuesList } from '../components/IssuesList';
 import { LabelPicker } from '../components/LabelPicker';
 import { Loading } from '../components/Loading';
-import { useIssues } from '../hooks';
+import { useIssuesInfinite } from '../hooks';
 import { State } from '../interfaces';
 import { styles } from '../Theme/globalTheme';
 
-export const HomeScreen = () => {
+export const HomeScreenInfinite = () => {
 
   const { top } = useSafeAreaInsets();
-  const windownWidth = Dimensions.get('window').width;
 
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [state, setState] = useState<State>();
 
-  const { issuesQuery, page, nextPage, prevPage } = useIssues({ labels: selectedLabels, state });
+  const { issuesQuery } = useIssuesInfinite({ labels: selectedLabels, state });
 
   const onLabelChanged = ( labelName: string ) => {
     ( selectedLabels.includes( labelName ) )
@@ -39,7 +38,8 @@ export const HomeScreen = () => {
               onChange={ (labelName ) => onLabelChanged( labelName ) }
             />
           </View>
-          <View 
+
+          {/* <View 
               style={{ 
                   flexDirection: 'row', 
                   // backgroundColor: 'green', 
@@ -47,9 +47,9 @@ export const HomeScreen = () => {
                   alignItems: 'center',
                   padding: 10,
                   position: 'absolute',
-                  top: top + 570,
+                  top: top + 640,
                   zIndex: 999,
-                  width: windownWidth - 30
+                  // width: windownWidth - 20
                   
                   
               }}
@@ -58,47 +58,29 @@ export const HomeScreen = () => {
                 activeOpacity={ 0.8 }
                 style={{
                     borderRadius: 20,
-                    width: 100,
+                    width: 120,
                     height: 40,
                     // position: 'absolute',
                     backgroundColor: issuesQuery.isFetching ? 'grey' : 'orange',
                     justifyContent: 'center',
                     alignItems: 'center'
                 }}
-                onPress={ prevPage }
-                disabled={ issuesQuery.isFetching }
+                onPress={ () => issuesQuery.fetchNextPage() }
+                disabled={ !issuesQuery.hasNextPage }
               >
-                  <Text style={{ fontSize: 20 }}>Prev</Text>
+                  <Text style={{ fontSize: 20 }}>Load more</Text>
               </TouchableOpacity>
-              <View>
-                  <Text>{ page }</Text>
-              </View>
+          </View> */}
 
-              <TouchableOpacity
-                activeOpacity={ 0.8 }
-                style={{
-                    borderRadius: 20,
-                    width: 100,
-                    height: 40,
-                    // position: 'absolute',
-                    backgroundColor: issuesQuery.isFetching ? 'grey' : 'orange',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}
-                onPress={ nextPage }
-                disabled={ issuesQuery.isFetching }
-              >
-                  <Text style={{ fontSize: 20 }}>Next</Text>
-              </TouchableOpacity>
-            </View>
           <View style={{ backgroundColor: 'white' }}>
             {
               issuesQuery.isLoading
                 ? ( <Loading /> )
                 : ( <IssuesList
-                      issues={ issuesQuery.data || [] } 
+                      issues={ issuesQuery.data?.pages.flat() || [] } 
                       state={ state }
                       onStateChanged={ (newState) => setState( newState )}
+                      hasP={ issuesQuery.fetchNextPage() }
                     /> )
             }
 

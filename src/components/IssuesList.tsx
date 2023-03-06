@@ -1,5 +1,6 @@
+import { InfiniteQueryObserverResult } from '@tanstack/react-query';
 import React from 'react'
-import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Issue, State } from '../interfaces';
 import { IssueCard } from './IssueCard';
 
@@ -10,11 +11,11 @@ interface Props {
     state?: State;
 
     onStateChanged: (state?: State) => void;
-
+    hasP: Promise<InfiniteQueryObserverResult<Issue[], unknown>>
 }
 
 
-export const IssuesList = ({ issues, state, onStateChanged }:Props) => {
+export const IssuesList = ({ issues, state, onStateChanged, hasP }:Props) => {
 
     const renderItem = ( issue: Issue ) => {
         return (
@@ -69,13 +70,29 @@ export const IssuesList = ({ issues, state, onStateChanged }:Props) => {
                     </View>
                     
                     <FlatList 
-                            data={ issues }
-                            keyExtractor={ (issue) => issue.id.toString()  }
-                            showsVerticalScrollIndicator={ false }
-                            renderItem={ (issue) => renderItem( issue.item ) }
-                     />
+                        style={{ marginBottom: 150 }}
+                        data={ issues }
+                        keyExtractor={ (issue) => issue.id.toString()  }
+                        showsVerticalScrollIndicator={ false }
+                        renderItem={ (issue) => renderItem( issue.item ) }
+                        onEndReached={ () => hasP }
+                        onEndReachedThreshold={ 0.4 }
+
+                        ListFooterComponent={ 
+                        <ActivityIndicator 
+                            style={{ height: 100 }}
+                            size={ 20 } 
+                            color="grey"
+                        /> 
+                        }
+                    />
+                        
                 </View>
+
+                
+                
             </View>
+            
         </View>
     )
 }
@@ -86,7 +103,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row', 
         justifyContent: 'flex-start',
         alignItems: 'center',
-        padding: 5,
+        // padding: 1,
         borderTopRightRadius: 8,
         borderTopLeftRadius: 8,
     },

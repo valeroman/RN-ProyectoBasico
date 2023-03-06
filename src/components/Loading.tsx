@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     loadingIndicator: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        top: 20
       }
 });
