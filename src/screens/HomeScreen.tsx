@@ -5,20 +5,22 @@ import { IssuesList } from '../components/IssuesList';
 import { LabelPicker } from '../components/LabelPicker';
 import { Loading } from '../components/Loading';
 import { useIssues } from '../hooks';
+import { State } from '../interfaces';
 import { styles } from '../Theme/globalTheme';
 
 export const HomeScreen = () => {
 
   const { top } = useSafeAreaInsets();
 
-  const [seletedLabels, setSeletedLabels] = useState<string[]>([]);
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  const [state, setState] = useState<State>();
 
-  const { issuesQuery } = useIssues()
+  const { issuesQuery } = useIssues({ labels: selectedLabels, state });
 
   const onLabelChanged = ( labelName: string ) => {
-    ( seletedLabels.includes( labelName ) )
-      ? setSeletedLabels( seletedLabels.filter( label => label != labelName))
-      : setSeletedLabels([...seletedLabels, labelName ]);
+    ( selectedLabels.includes( labelName ) )
+      ? setSelectedLabels( selectedLabels.filter( label => label !== labelName )  )
+      : setSelectedLabels([...selectedLabels, labelName ]);
   }
 
   return (
@@ -30,18 +32,23 @@ export const HomeScreen = () => {
         </View>
 
         <View>
-          {
-            issuesQuery.isLoading
-              ? ( <Loading /> )
-              : ( <IssuesList issues={ issuesQuery.data || [] } /> )
-          }
-        </View>
         <View style={{ marginTop: 20 }}>
           <LabelPicker 
-            seletedLabels={ seletedLabels }
+            selectedLabels={ selectedLabels }
             onChange={ (labelName ) => onLabelChanged( labelName ) }
           />
         </View>
+          {
+            issuesQuery.isLoading
+              ? ( <Loading /> )
+              : ( <IssuesList
+                    issues={ issuesQuery.data || [] } 
+                    state={ state }
+                    onStateChanged={ (newState) => setState( newState )}
+                  /> )
+          }
+        </View>
+        
       </View>
     </>
   )

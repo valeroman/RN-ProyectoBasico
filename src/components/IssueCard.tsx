@@ -1,8 +1,11 @@
 import React from 'react'
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon  from 'react-native-vector-icons/Ionicons';
 import { Issue, State } from '../interfaces/issue';
+import { getIssueCommets, getIssueInfo } from '../hooks';
+import { timeSince } from '../helpers';
 
 const {width} = Dimensions.get('window');
 
@@ -14,8 +17,40 @@ export const IssueCard = ({ issue }: Props) => {
 
     const navigation = useNavigation<any>();
 
+    const queryclient = useQueryClient();
+
+    const prefetchData = () => {
+
+        queryclient.prefetchQuery(
+            ['issue', issue.number],
+            () => getIssueInfo( issue.number ),
+        );
+        // cargar los comentarios
+        queryclient.prefetchQuery(
+            ['issue', issue.number, 'comments'],
+            () => getIssueCommets( issue.number ),
+        );
+    }
+
+    const onPressIn = () => {
+        console.log('press')
+    }
+
+    // Mando la data que va hacer almacenada en el cache
+    const preSetData = () => {
+
+        queryclient.setQueryData(
+            ['issue', issue.number],
+            issue,
+            {
+                updatedAt: new Date().getTime() + 100000
+            }
+        );
+    }
+
     return (
         <TouchableOpacity
+        onPressIn={ onPressIn }
             onPress={
                 () => navigation.navigate('IssueScreen', { issue: issue } )
             }
@@ -41,8 +76,27 @@ export const IssueCard = ({ issue }: Props) => {
                     </View>
                     <View style={{ width: 200, left: 5 }}>
                         <Text style={ styles.textMessage }>{ issue.title }</Text>
-                        <Text style={ styles.text }>#{ issue.number } opened 2 days ago by </Text>
+                        <Text style={ styles.text }>#{ issue.number } opened { timeSince( issue.created_at ) } ago by </Text>
                         <Text style={ styles.textMessage }>{ issue.user.login }</Text>
+                        <View>
+                            {
+                                issue.labels.map(label => (
+                                    <View
+                                        key={ label.id }
+                                        style={{
+                                            ...styles.labelContainer,
+                                            borderColor: `#${ label.color }`,
+                                            borderWidth: 1,
+                                            marginBottom: 10,
+                                            backgroundColor:  `#${ label.color }`
+                                        }}
+                                    >
+                                        <Text>{ label.name }</Text>
+
+                                    </View>
+                                ))
+                            }
+                        </View>
                     </View>
                     <View style={{ alignItems: 'center', left: 5 }}>
                         <View 
@@ -112,5 +166,14 @@ const styles = StyleSheet.create({
         fontSize: 13,
         // fontWeight: 'bold',
         textAlign: 'auto'
+    },
+   
+    labelContainer: {
+        top: 5,
+        borderWidth: 1,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5
     }
 });

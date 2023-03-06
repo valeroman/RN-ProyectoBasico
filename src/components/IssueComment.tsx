@@ -17,7 +17,7 @@ export const IssueComment = ({ issue }: Props) => {
     <>
         <View 
             style={{ 
-                backgroundColor: 'grey', 
+                backgroundColor: 'black', 
                 flexDirection: 'row', 
                 justifyContent: 'flex-start',
                 alignItems: 'center',
